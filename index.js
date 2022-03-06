@@ -18,3 +18,16 @@ const db = mysql.createConnection (
 },
 console.log ("You are now connected to employee_db database")
 )
+
+init = () => {
+    inquirer.prompt ({
+        name: "action",
+        type: 'list',
+        message: "Please select an option from the actions listed below.",
+        choices: ["View all departments", "View all roles", "Add a department", "Add a role", "Add an employee role", "Update an employee role", "Quit application"]
+    }
+ )
+
+}
+
+init();
