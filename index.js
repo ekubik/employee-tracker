@@ -5,6 +5,11 @@ const mysql = require("mysql2");
 const cTable = require("console.table");
 const inquirer = require("inquirer");
 
+const {
+  addDepartmentQuestions,
+  addNewRoleQuestions,
+} = require("./utils/EMSquestions");
+
 require("dotenv").config();
 
 //connect to database - using environmental variables
@@ -28,9 +33,10 @@ init = () => {
       choices: [
         "View all departments",
         "View all roles",
+        "View all employees",
         "Add a department",
         "Add a role",
-        "Add an employee role",
+        "Add an employee",
         "Update an employee role",
         "Quit application",
       ],
@@ -41,9 +47,26 @@ init = () => {
           viewAllDepartments();
           break;
 
+        case "View all roles":
+          viewAllRoles();
+          break;
+
+        case "View all employees":
+          viewAllEmployees();
+          break;
+
+        case "Add a department":
+          addADepartment();
+          break;
+
+        case "Add a role":
+          addANewRole();
+          break;
+
         case "Quit application":
-          console.log("Thank you for using the Employee Management System. Goodbye :)"
-          );  
+          console.log(
+            "Thank you for using the Employee Management System. Goodbye :)"
+          );
           db.end();
           break;
       }
@@ -60,4 +83,59 @@ const viewAllDepartments = () => {
   });
 };
 
+const viewAllRoles = () => {
+  db.query("SELECT * FROM role", (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.table(result);
+    init();
+  });
+};
+
+//need to add role data/ and manager
+const viewAllEmployees = () => {
+  db.query("SELECT * FROM employee", (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.table(result);
+    init();
+  });
+};
+
+const addADepartment = () => {
+  inquirer.prompt([addDepartmentQuestions]).then((results) => {
+    const data = results.name;
+    db.query(
+      `INSERT INTO department (name) VALUES ("${data}")`,
+      (error, result) => {
+        if (error) {
+          console.log(error);
+        }
+        console.log(`${data} has now been added to the database`);
+        init();
+      }
+    );
+  });
+};
+
+const addANewRole = () => {
+  inquirer.prompt(addNewRoleQuestions).then((results) => {
+    // const data = [results.name, results.salary, results.department_id];
+    db.query(
+      `INSERT INTO role(title, salary, department_id) VALUES ("${results.title}", "${results.salary}", "${results.department_id}")`,
+      (error, results) => {
+        if (error) {
+          console.log(error);
+        }
+        console.log(`${results.title} has now been added to the database`);
+        init();
+      }
+    );
+  });
+};
+
 init();
+
+//inquirer.prompt(addNewRoleQuestions);
