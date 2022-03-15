@@ -11,7 +11,7 @@ const addDepartmentQuestions = {
      name: "title",
      message: "Please enter the name of the role you want to add to the database" 
  },
-{ type: "input",
+{type: "input",
 name: "salary",
 message: "Please enter the salary associated with this role"}, 
 { type: "input",

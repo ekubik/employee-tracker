@@ -93,16 +93,6 @@ const viewAllRoles = () => {
   });
 };
 
-//need to add role data/ and manager
-const viewAllEmployees = () => {
-  db.query("SELECT * FROM employee", (err, result) => {
-    if (err) {
-      console.log(err);
-    }
-    console.table(result);
-    init();
-  });
-};
 
 const addADepartment = () => {
   inquirer.prompt([addDepartmentQuestions]).then((results) => {
@@ -135,6 +125,16 @@ const addANewRole = () => {
     );
   });
 };
+
+const viewAllEmployees = () => {
+  db.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id`, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.table(result);
+    init();
+  });
+}
 
 init();
 
