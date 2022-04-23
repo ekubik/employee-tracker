@@ -91,7 +91,6 @@ const viewAllRoles = () => {
   db.query(
     "SELECT role.title, role.salary, department.name AS department FROM role JOIN department on role.department_id = department.id",
     (err, result) => {
-      //db.query("SELECT * FROM role", (err, result) => {
       if (err) {
         console.log(err);
       }
@@ -135,7 +134,8 @@ const addANewRole = () => {
 
 const viewAllEmployees = () => {
   db.query(
-    `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary AS Salary, employee.manager_id FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id`,
+    //"SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id, role.title, role.salary, department.name AS department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id",
+    "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee m RIGHT JOIN employee ON m.id = employee.manager_id JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id",
     (err, result) => {
       if (err) {
         console.log(err);
