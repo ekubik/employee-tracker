@@ -63,6 +63,10 @@ init = () => {
           addANewRole();
           break;
 
+        case "Update an employee role":
+          updateEmployeeRole();
+          break;
+
         case "Quit application":
           console.log(
             "Thank you for using the Employee Management System. Goodbye :)"
@@ -84,15 +88,18 @@ const viewAllDepartments = () => {
 };
 
 const viewAllRoles = () => {
-  db.query("SELECT * FROM role", (err, result) => {
-    if (err) {
-      console.log(err);
+  db.query(
+    "SELECT role.title, role.salary, department.name AS department FROM role JOIN department on role.department_id = department.id",
+    (err, result) => {
+      //db.query("SELECT * FROM role", (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      console.table(result);
+      init();
     }
-    console.table(result);
-    init();
-  });
+  );
 };
-
 
 const addADepartment = () => {
   inquirer.prompt([addDepartmentQuestions]).then((results) => {
@@ -127,15 +134,18 @@ const addANewRole = () => {
 };
 
 const viewAllEmployees = () => {
-  db.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id`, (err, result) => {
-    if (err) {
-      console.log(err);
+  db.query(
+    `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary AS Salary, employee.manager_id FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id`,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      console.table(result);
+      init();
     }
-    console.table(result);
-    init();
-  });
-}
+  );
+};
+
+const updateEmployeeRole = () => {};
 
 init();
-
-//inquirer.prompt(addNewRoleQuestions);
