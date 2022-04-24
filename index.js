@@ -37,6 +37,7 @@ init = () => {
         "Add a department",
         "Add a role",
         "Add an employee",
+        "Delete an employee",
         "Update an employee role",
         "Quit application",
       ],
@@ -69,6 +70,10 @@ init = () => {
 
         case "Update an employee role":
           updateEmployeeRole();
+          break;
+
+        case "Delete an employee":
+          deleteEmployee();
           break;
 
         case "Quit application":
@@ -249,6 +254,40 @@ const updateEmployeeRole = () => {
           );
         });
     });
+  });
+};
+
+const deleteEmployee = () => {
+  db.query(`SELECT * FROM employee`, async (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    let employee = result.map((employee) => ({
+      name: employee.first_name + " " + employee.last_name,
+      value: employee.id,
+    }));
+    inquirer
+      .prompt([
+        {
+          name: "employee",
+          type: "rawlist",
+          message: "Select the employee you would like to delete.",
+          choices: employee,
+        },
+      ])
+      .then((response) => {
+        db.query(
+          "DELETE FROM employee WHERE ?",
+          [{ id: response.employee }],
+          (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log("Employee has been removed from the system");
+            init();
+          }
+        );
+      });
   });
 };
 
