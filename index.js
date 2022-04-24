@@ -63,7 +63,7 @@ init = () => {
           addANewRole();
           break;
 
-        case "Add a new employee":
+        case "Add an employee":
           addAnEmployee();
           break;
 
@@ -156,6 +156,7 @@ const addAnEmployee = () => {
       console.log(err);
     }
     let role = result.map((role) => ({ name: role.title, value: role.id }));
+    ;
     db.query(`SELECT * FROM employee`, async (err, result) => {
       if (err) {
         console.log(err);
