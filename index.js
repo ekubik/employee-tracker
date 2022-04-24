@@ -63,6 +63,10 @@ init = () => {
           addANewRole();
           break;
 
+        case "Add a new employee":
+          addAnEmployee();
+          break;
+
         case "Update an employee role":
           updateEmployeeRole();
           break;
@@ -144,6 +148,63 @@ const viewAllEmployees = () => {
       init();
     }
   );
+};
+
+const addAnEmployee = () => {
+  db.query(`SELECT * FROM role`, async (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    let role = result.map((role) => ({ name: role.title, value: role.id }));
+    db.query(`SELECT * FROM employee`, async (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      let manager = result.map((employee) => ({
+        name: employee.first_name + " " + employee.last_name,
+        value: employee.id,
+      }));
+      inquirer
+        .prompt([
+          {
+            name: "first_name",
+            type: "input",
+            message: "Please enter the employee's first name.",
+          },
+          {
+            name: "last_name",
+            type: "input",
+            message: "Please enter the new employee's last name.",
+          },
+          {
+            name: "title",
+            type: "rawlist",
+            message: "Please select the employee's job title.",
+            choices: role,
+          },
+          {
+            name: "employee_manager",
+            type: "rawlist",
+            message: "Please select the manager for this employee.",
+            choices: manager,
+          },
+        ])
+        .then((response) => {
+          db.query(
+            `INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES ("${response.first_name}", "${response.last_name}", "${response.title}", "${response.employee_manager}")`,
+            (err, result) => {
+              if (err) {
+                console.log(err);
+              }
+              console.log(
+                `New employee has been succesfully added to the system`
+              );
+              init();
+            }
+          );
+        });
+    });
+  });
 };
 
 const updateEmployeeRole = () => {};
