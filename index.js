@@ -29,16 +29,18 @@ init = () => {
     .prompt({
       name: "action",
       type: "list",
-      message: "Please select an option from the actions listed below.",
+      message: "Welcome to the Employee Management Sytem. Please select an option from the actions listed below.",
       choices: [
         "View all departments",
         "View all roles",
         "View all employees",
         "Add a department",
+        "Delete a department",
         "Add a role",
         "Add an employee",
         "Delete an employee",
         "Update an employee role",
+        "Update an employee's manager",
         "Quit application",
       ],
     })
@@ -59,6 +61,10 @@ init = () => {
         case "Add a department":
           addADepartment();
           break;
+        
+        case "Delete a department":
+          deleteDepartment();
+          break;
 
         case "Add a role":
           addANewRole();
@@ -71,6 +77,10 @@ init = () => {
         case "Update an employee role":
           updateEmployeeRole();
           break;
+        
+        case "Update an employee's manager": 
+        updateEmployeeManager();
+        break;
 
         case "Delete an employee":
           deleteEmployee();
@@ -284,6 +294,88 @@ const deleteEmployee = () => {
               console.log(err);
             }
             console.log("Employee has been removed from the system");
+            init();
+          }
+        );
+      });
+  });
+};
+
+
+const updateEmployeeManager = () => {
+  db.query(`SELECT * FROM employee`, async (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    let employee = result.map((employee) => ({
+      name: employee.first_name + " " + employee.last_name,
+      value: employee.id,
+    }));
+    db.query(`SELECT * FROM employee`, async (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      let manager = result.map((employee) => ({ name: employee.first_name + " " + employee.last_name, value: employee.id }));
+      inquirer
+        .prompt([
+          {
+            name: "employee",
+            type: "rawlist",
+            message: "Select an employee to update.",
+            choices: employee,
+          },
+          {
+            name: "manager",
+            type: "rawlist",
+            message: "Select this employee's manager.",
+            choices: manager,
+          },
+        ])
+        .then((response) => {
+          db.query(
+            `UPDATE employee SET ? WHERE ?`,
+            [{ manager_id: response.manager }, { id: response.employee }],
+            (err, result) => {
+              if (err) {
+                console.log(err);
+              }
+              console.log("Employee has been successfully updated");
+              init();
+            }
+          );
+        });
+    });
+  });
+};
+
+
+const deleteDepartment = () => {
+  db.query(`SELECT * FROM department`, async (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    let department = result.map((department) => ({
+      name: department.name,
+      value: department.id,
+    }));
+    inquirer
+      .prompt([
+        {
+          name: "department",
+          type: "rawlist",
+          message: "Select the department you would like to delete.",
+          choices: department
+        },
+      ])
+      .then((response) => {
+        db.query(
+          "DELETE FROM department WHERE ?",
+          [{ id: response.department }],
+          (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log("Department has been removed from the system");
             init();
           }
         );
