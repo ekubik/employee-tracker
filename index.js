@@ -24,6 +24,7 @@ const db = mysql.createConnection(
   console.log("You are now connected to employee_db database")
 );
 
+//user presented with list of questions
 init = () => {
   inquirer
     .prompt({
@@ -44,6 +45,7 @@ init = () => {
         "Quit application",
       ],
     })
+    //depending on user response, implement different function
     .then((response) => {
       switch (response.action) {
         case "View all departments":
@@ -152,7 +154,6 @@ const addANewRole = () => {
 
 const viewAllEmployees = () => {
   db.query(
-    //"SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id, role.title, role.salary, department.name AS department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id",
     "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name AS department, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee m RIGHT JOIN employee ON m.id = employee.manager_id JOIN role ON employee.role_id = role.id JOIN department ON department.id = role.department_id",
     (err, result) => {
       if (err) {

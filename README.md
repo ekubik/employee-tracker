@@ -54,10 +54,11 @@ The application can be started from the command line, using the command 'npm sta
 
 ## Demonstration
 
-To view a video demonstration of the application's functionality click <a href=""> here </a>
+<img src="utils/ems-1.png" />
+<br>
+<img src="utils/ems-2.png"/>
 
-<img src= />
-<img src=/>
+To view a full video demonstration of the application's functionality click <a href="https://drive.google.com/file/d/1SUx_59lEALrs6CrkILZaRILssKDEeeaa/view"> here </a>
 
 <br>
 
